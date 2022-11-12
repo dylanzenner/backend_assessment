@@ -1,6 +1,9 @@
 name: Format code on push with Black
 
-on: [push]
+on:
+  push:
+    paths:
+      - './backend/api.py'
 
 jobs:
   lint:
