@@ -81,6 +81,7 @@ def spend_points():
         else:
             points_to_spend -= transaction["points"]
             data[transaction["payer"]] -= transaction["points"]
+
     if data:
         for item in data:
             if data[item] > 0:
