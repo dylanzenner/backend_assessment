@@ -1,6 +1,7 @@
 # Steps for replication (local):
 - Clone the repo
 - Start the docker daemon
+- Open a terminal session in the project root directory
 - Run the following commands in order
   
   ```bash
@@ -10,3 +11,4 @@
   ```bash
     docker compose up
   ```
+  
