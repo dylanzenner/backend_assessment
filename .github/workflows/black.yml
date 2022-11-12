@@ -1,6 +1,6 @@
 name: Format code on push with Black
 
-on: [push, pull_request]
+on: [push]
 
 jobs:
   lint:
@@ -8,5 +8,3 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: psf/black@stable
-        with:
-          src: "./backend/api.py"
