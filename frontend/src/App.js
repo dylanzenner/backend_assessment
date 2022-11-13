@@ -17,6 +17,7 @@ function App() {
   const [addPointsDisplay, setAddPointsDisplay] = useState(false);
   const [spendPointsDisplay, setSpendPointsDisplay] = useState(false);
   const [data, setData] = useState([]);
+  const [spendPoints, setSpendPoints] = useState("");
 
   const handleOnSubmitAddPoints = function (event) {
     const formData = new FormData();
@@ -38,8 +39,7 @@ function App() {
 
   const handleOnSubmitSpendPoints = function (event) {
     const formData = new FormData();
-    formData.append("payer", payer);
-    formData.append("points", points);
+    formData.append("points", spendPoints);
     const requestOptions = {
       method: "POST",
       body: formData,
@@ -135,16 +135,12 @@ function App() {
           <div className={"mx-auto text-3xl text-white"}>
             Please enter the amount of points you'd like to spend:
           </div>
-          <form
-            name={"points"}
-            className={"relative grid grid-cols-1 text-2xl"}
-          >
+          <form name={"spend"} className={"relative grid grid-cols-1 text-2xl"}>
             <input
               className={"mx-auto rounded-md mt-5 pl-2"}
               placeholder={"Points"}
               onChange={(event) => {
-                setPoints(0);
-                setPoints(event.target.value);
+                setSpendPoints(event.target.value);
               }}
             ></input>
           </form>
