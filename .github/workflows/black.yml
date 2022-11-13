@@ -1,9 +1,6 @@
 name: Format code on push with Black
 
-on:
-  push:
-    paths:
-      - './backend/api.py'
+on: [push]
 
 jobs:
   lint:
@@ -11,3 +8,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: psf/black@stable
+        with:
+          options: "--check --verbose"
+          src: "./backend/api.py"
+          
