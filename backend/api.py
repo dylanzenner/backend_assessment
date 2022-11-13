@@ -121,7 +121,7 @@ def download():
             if data[item] > 0:
                 return_data.append({"payer": item, "points": data[item]})
     else:
-        return 400, "No data to download. Add transactions first"
+        return "No data to download. Add transactions first", 400
 
     si = StringIO()
     csv_writer = csv.DictWriter(si, ["payer", "points"])
