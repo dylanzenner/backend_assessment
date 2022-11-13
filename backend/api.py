@@ -56,8 +56,7 @@ def add_points():
 @app.route("/spend_points", methods=["POST"])
 def spend_points():
     """
-    Sorts the transactions by timestamp, spends the points and returns the data
-
+    Sorts the transactions by timestamp before spending the points which were passed in via the request
     """
     global data, transactions
     return_data = []
@@ -105,7 +104,7 @@ def reset():
 @app.route("/download", methods=["GET"])
 def download():
     """
-    Returns a CSV file with the amount of points each payer has
+    Downloads a CSV file container the payer and their total points
     """
     global data
     return_data = []
