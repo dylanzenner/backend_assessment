@@ -1,3 +1,6 @@
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/dylanzenner/backend_assessment/format-with-black?label=black-formatting)
+
+
 # Steps for replication (local):
 - Clone the repo
 - Start the docker daemon
@@ -11,4 +14,6 @@
   ```bash
     docker compose up
   ```
+
+  - Example:
   
