@@ -36,6 +36,7 @@ def add_points():
             "payer": payer,
             "points": points,
             "timestamp": datetime.utcnow().isoformat() + "Z",
+            "spent": False,
         }
     )
 
@@ -50,7 +51,7 @@ def add_points():
     for item in data:
         return_data.append({"payer": item, "points": data[item]})
 
-    return jsonify(return_data), 200
+    return return_data, 200
 
 
 @app.route("/spend_points", methods=["POST"])
@@ -65,20 +66,26 @@ def spend_points():
 
     points_to_spend = int(request.form["points"])
 
-    if max(data.values()) == 0:
-        return "No points to spend", 400
-
     for transaction in transactions:
-        if points_to_spend <= 0:
-            return "Points to spend must be greater than 0", 400
 
-        if transaction["points"] >= points_to_spend:
+        if points_to_spend <= 0:
+            break
+
+        if transaction["points"] < 0 and transaction["spent"] != True:
+            data[transaction["payer"]] -= transaction["points"]
+            points_to_spend -= transaction["points"]
+            transaction["spent"] = True
+
+        elif transaction["points"] < points_to_spend and transaction["spent"] != True:
+            data[transaction["payer"]] -= transaction["points"]
+            points_to_spend -= transaction["points"]
+            transaction["spent"] = True
+
+        elif transaction["points"] >= points_to_spend and transaction["spent"] != True:
             data[transaction["payer"]] -= points_to_spend
             points_to_spend = 0
-
-        else:
-            points_to_spend -= transaction["points"]
-            data[transaction["payer"]] -= transaction["points"]
+            if transaction["points"] - points_to_spend == 0:
+                transaction["spent"] = True
 
     if data:
         for item in data:
@@ -88,7 +95,7 @@ def spend_points():
     else:
         return_data = []
 
-    return jsonify(return_data), 200
+    return return_data, 200
 
 
 @app.route("/reset", methods=["POST"])
@@ -98,7 +105,7 @@ def reset():
     """
     global data, transactions
     data, transactions = {}, []
-    return jsonify([data]), 201
+    return [data], 201
 
 
 @app.route("/download", methods=["GET"])
