@@ -1,4 +1,4 @@
-from flask import Flask, request, make_response
+from flask import Flask, request, make_response, jsonify
 from flask_cors import CORS
 from datetime import datetime
 import csv
@@ -17,7 +17,6 @@ CORS(
 
 transactions = []
 data = {}
-
 now = datetime.now()
 
 
@@ -48,13 +47,10 @@ def add_points():
         if data[payer] == 0:
             del data[payer]
 
-    print(data)
-    print("transactions: {}".format(transactions))
-
     for item in data:
         return_data.append({"payer": item, "points": data[item]})
 
-    return return_data
+    return jsonify(return_data), 200
 
 
 @app.route("/spend_points", methods=["POST"])
@@ -70,9 +66,12 @@ def spend_points():
 
     points_to_spend = int(request.form["points"])
 
+    if max(data.values()) == 0:
+        return "No points to spend", 400
+
     for transaction in transactions:
         if points_to_spend <= 0:
-            break
+            return "Points to spend must be greater than 0", 400
 
         if transaction["points"] >= points_to_spend:
             data[transaction["payer"]] -= points_to_spend
@@ -90,7 +89,7 @@ def spend_points():
     else:
         return_data = []
 
-    return return_data
+    return jsonify(return_data), 200
 
 
 @app.route("/reset", methods=["POST"])
@@ -100,7 +99,7 @@ def reset():
     """
     global data, transactions
     data, transactions = {}, []
-    return [data]
+    return jsonify([data]), 201
 
 
 @app.route("/download", methods=["GET"])
@@ -115,6 +114,8 @@ def download():
         for item in data:
             if data[item] > 0:
                 return_data.append({"payer": item, "points": data[item]})
+    else:
+        return 400, "No data to download. Add transactions first"
 
     si = StringIO()
     csv_writer = csv.DictWriter(si, ["payer", "points"])
@@ -123,7 +124,7 @@ def download():
     output.headers["Content-Disposition"] = "attachment; filename=downloaded_data.csv"
     output.headers["Content-type"] = "text/csv"
 
-    return output
+    return output, 200
 
 
 if __name__ == "__main__":
